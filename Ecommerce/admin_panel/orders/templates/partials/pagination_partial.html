@@ -1,0 +1,23 @@
+<span class="step-links d-flex justify-content-center w-100">
+    <div class="text-center align-items-center mr-2">
+        <a class="btn btn-inverse-light" {% if not result.paginated_orders.has_previous %} style="pointer-events: none;" {% else %}
+            href="?page=1{% if request.session.status_filter %}&status={{ request.session.status_filter }}{% endif %}" {% endif %}>&laquo;</a>
+    </div>
+    <div class="text-center align-items-center mr-2">
+        <a class="btn btn-inverse-light" {% if not result.paginated_orders.has_previous %} style="pointer-events: none;" {% else %}
+            href="?page={{ result.paginated_orders.previous_page_number }}{% if request.session.status_filter %}&status={{ request.session.status_filter }}{% endif %}" {% endif %}>&#8249;</a>
+    </div>
+    <span class="current mr-2">
+        Page {% if result.paginated_orders.number %}{{ result.paginated_orders.number }} of {{ result.paginated_orders.paginator.num_pages }} {% else %} 1 of 1{% endif %}
+    </span>
+    <div class="text-center align-items-center mr-2">
+        <a class="btn btn-inverse-light" {% if result.paginated_orders.has_next %} 
+            href="?page={{ result.paginated_orders.next_page_number }}{% if request.session.status_filter %}&status={{ request.session.status_filter }}{% endif %}" {% else %}
+            style="pointer-events: none;" {% endif %}>&#8250;</a>
+    </div>
+    <div class="text-center align-items-center">
+        <a class="btn btn-inverse-light" {% if result.paginated_orders.has_next %} 
+            href="?page={{ result.paginated_orders.paginator.num_pages }}{% if request.session.status_filter %}&status={{ request.session.status_filter }}{% endif %}" {% else %}
+            style="pointer-events: none;" {% endif %}>&raquo;</a>
+    </div>
+</span>

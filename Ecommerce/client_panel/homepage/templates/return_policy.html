@@ -1,0 +1,223 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+<div class="container-fluid profile-header py-5">
+    <h1 class="text-center text-white display-6">Return Policy</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Return Policy</li>
+    </ol>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <h3>Return Policy</h3>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Introduction</h5>
+                </div>
+                <div class="row g-4 mb-5">
+                    <p>
+                        At DM, we want you to be completely satisfied with your purchase. If you're not
+                        happy with your order, we're here to help. Please review our return policy below to understand
+                        how to initiate a return or exchange.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Eligibility for Returns</h5>
+                </div>
+                <div class="row g-4">
+                    <p>
+                    <ul>
+                        <li>
+                            <strong>Time Frame:</strong> You have [Number of Days] days from the date of delivery to
+                            return eligible items.
+                        </li>
+                        <li>
+                            <strong>
+                                Condition of Items:</strong> To be eligible for a return, items must be unused, in the
+                            same condition that you received them, and in their original packaging. Items that show
+                            signs of wear or have been altered, washed, or damaged in any way are not eligible for
+                            return.
+                        </li>
+                        <li>
+                            <strong>
+                                Non-Returnable Items:</strong> Certain items are final sale and cannot be returned.
+                            These include:
+                            <ul>
+                                <li>
+                                    Gift cards
+                                </li>
+                                <li>
+                                    Downloadable software or digital products
+                                </li>
+                                <li>
+                                    Personalized or custom-made items
+                                </li>
+                                <li>
+                                    Perishable goods (e.g., food, flowers)
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>How to Initiate a Return</h5>
+                </div>
+                <div class="row g-4">
+                    <p>
+                    <ol>
+                        <li>
+                            <strong>Contact Us:</strong> To initiate a return, please contact our customer service team
+                            at [Your Contact Information] with your order number and reason for return. We'll provide
+                            you with a return authorization and instructions on how to proceed.
+                        </li>
+                        <li>
+                            <strong>
+                                Packaging:</strong> Please securely pack the item(s) in the original packaging,
+                            including any accessories, tags, and documentation.
+                        </li>
+                        <li>
+                            <strong>
+                                Shipping:</strong> You will be responsible for paying for your own shipping costs for
+                            returning your item. Shipping costs are non-refundable. If you receive a refund, the cost of
+                            return shipping will be deducted from your refund. We recommend using a trackable shipping
+                            service or purchasing shipping insurance, as we cannot guarantee that we will receive your
+                            returned item.
+                        </li>
+                    </ol>
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Refunds</h5>
+                </div>
+                <div class="row g-4">
+                    <p>
+                    <ul>
+                        <li>
+                            <strong>Processing:</strong> Once we receive and inspect your returned item(s), we will
+                            notify you of the approval or rejection of your refund. If approved, your refund will be
+                            processed, and a credit will be applied to your original method of payment within [Number of
+                            Days].
+                        </li>
+                        <li>
+                            <strong>
+                                Partial Refunds:</strong> In certain situations, only partial refunds may be granted
+                            (e.g., items not in their original condition, damaged items, or items returned more than
+                            [Number of Days] after delivery).
+                        </li>
+                        <li>
+                            <strong>
+                                Shipping Costs:</strong> Original shipping costs are non-refundable. If you received
+                            free shipping on your order, the cost of shipping will be deducted from your refund.
+                        </li>
+                    </ul>
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Exchanges</h5>
+                </div>
+                <div class="row g-4 mb-5">
+                    <p>
+                        We only replace items if they are defective or damaged. If you need to exchange an item for the
+                        same product, please contact us at [Your Contact Information] and follow the return process.
+                        Once the original item is received and inspected, we will send out the replacement.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Late or Missing Refunds</h5>
+                </div>
+                <div class="row g-4">
+                    <p>
+                        If you haven’t received a refund yet:
+                    <ol>
+                        <li>
+                            <strong>Check Your Bank Account:</strong> It may take some time before your refund is
+                            officially posted.
+                        </li>
+                        <li>
+                            <strong>
+                                Contact Your Credit Card Company:</strong> Processing time before a refund is posted can
+                            vary.
+                        </li>
+                        <li>
+                            <strong>
+                                Contact Your Bank:</strong> There is often some processing time before a refund is
+                            posted.
+                        </li>
+                    </ol>
+
+                    If you’ve done all of this and you still have not received your refund, please contact us at [Your
+                    Contact Information].
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Return Policy for International Orders</h5>
+                </div>
+                <div class="row g-4 mb-5">
+                    <p>
+                        For international orders, customers are responsible for return shipping costs, including any
+                        customs duties or taxes. The process for returns and refunds for international orders may vary
+                        depending on the country of origin. Please contact our customer service team for specific
+                        instructions.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Damaged or Defective Items</h5>
+                </div>
+                <div class="row g-4 mb-5">
+                    <p>
+                        If you receive an item that is damaged or defective, please contact us within [Number of Days]
+                        of delivery. We will arrange for a replacement or refund at no additional cost to you.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Final Sale Items</h5>
+                </div>
+                <div class="row g-4 mb-5">
+                    <p>
+                        Items marked as "Final Sale" cannot be returned or exchanged. Please review the product
+                        description carefully before making a purchase.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <h5>Contact Us</h5>
+                </div>
+                <div class="row g-4 mb-5">
+                    <p>
+                        If you have any questions or concerns about this Privacy Policy, please contact us at:
+                    </p>
+
+                    <p> DM </p>
+
+                    <p>Address: 1429 Netus Rd, NY 48247</p>
+                    <p>Email: Example@gmail.com</p>
+                    <p>Phone: +0123 4567 8910</p>
+                </div>
+
+                <div class="row g-4">
+                    <p>
+                        Thank you for trusting DM with your personal information.
+                    </p>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

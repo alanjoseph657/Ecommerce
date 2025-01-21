@@ -1,0 +1,21 @@
+{% if not result.error %}
+    {% for i in result.paginated_products %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{i.category_name}}</td>
+            <td>{{i.product_name}}</td>
+            <td>{{i.description}}</td>
+            <td>{{i.price}}</td>
+            <td>
+                <div class="checkbox-apple">
+                    <input class="yep" id="check-apple-{{ forloop.counter }}" type="checkbox" {% if i.is_active %} checked {% endif %} data-id="{{i.id}}"
+                        onchange="acticveCheck(event)">
+                    <label for="check-apple-{{ forloop.counter }}"></label>
+                </div>
+              </td>
+            <td>{{i.inventory}}</td>
+            <td><a href="{% url 'product_detail' slug=i.slug %}"><i class=" mdi mdi-eye "></i> View</a></td>
+            <!-- <td><a href="#"> <i class="mdi mdi-delete"></i> Delete</a></td> -->
+        </tr>
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,22 @@
+{% if not result.error %}
+{% for i in result.paginated_orders %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{i.id}}</td>
+    <td>{{i.status}}</td>
+    <td>{{i.reference_number}}</td>
+    <td>{{i.created_at}}</td>
+    <!-- <td>
+            <div class="checkbox-apple">
+                <input class="yep" id="check-apple-{{ forloop.counter }}" type="checkbox" {% if i.is_active %} checked {% endif %} data-id="{{i.id}}"
+                    onchange="acticveCheck(event)">
+                <label for="check-apple-{{ forloop.counter }}"></label>
+            </div>
+            </td>
+        <td>{{i.inventory}}</td> -->
+    <td><a href="#"><i class=" mdi mdi-eye "></i> View</a>
+    </td>
+    <!-- <td><a href="#"> <i class="mdi mdi-delete"></i> Delete</a></td> -->
+</tr>
+{% endfor %}
+{% endif %}

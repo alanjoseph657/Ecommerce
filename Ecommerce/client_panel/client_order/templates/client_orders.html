@@ -1,0 +1,183 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Orders</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Orders</li>
+    </ol>
+</div>
+
+<div class="container-fluid fruite py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <h4>Navigation</h4>
+                                    <ul class="list-unstyled fruite-categorie">
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'profile' %}">Profile</a>
+                                            </div>
+                                        </li>
+                                        <!-- <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#">Wishlist</a>
+                                            </div>
+                                        </li> -->
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'client_address_view' %}">Address</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'client_orders' %}" class="text-info">Orders</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9" id="profile-info">
+                        <div class="row g-4 mb-5 bg-light">
+
+                            <h4>All Orders</h4>
+
+                            {% if orders %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Order ID</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Payment</th>
+                                            <th scope="col">Placed On</th>
+                                            <th scope="col">Handle</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for items in orders %}
+                                            <tr>
+
+                                                <td>
+                                                    <a href="{% url 'client_order_detail' %}?order_id={{items.id}}">
+                                                    <p class="mb-0 mt-4">{{items.id}}</p>
+                                                    </a>
+                                                </td>
+
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{items.total_price}} $</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{items.status}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{items.payment_status}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{items.created_at}}</p>
+                                                </td>
+
+                                                <td >
+                                                    {% if items.status == 'PENDING' or items.status == 'SHIPPED' %}
+                                                    <a href="{% url 'client_order_detail' %}?order_id={{items.id}}"
+                                                        class="btn btn-md rounded-circle bg-light border mt-4 mr-2">
+                                                        <i class="bi bi-eye text-info"></i>
+                                                    </a>
+
+                                                    <a href="{% url 'cancel_order' %}?order_id={{items.id}}"
+                                                        class="btn btn-md rounded-circle bg-light border mt-4">
+                                                        <i class="fa fa-times text-danger"></i>
+                                                    </a>
+                                                    {% else%}
+                                                    <a href="{% url 'client_order_detail' %}?order_id={{items.id}}"
+                                                        class="btn btn-md rounded-circle bg-light border mt-4">
+                                                        <i class="bi bi-eye text-info"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </td>
+                                                <!-- <td>
+                            <a href="{% url 'remove_from_cart_view' %}?cart_id={{items.id}}" class="btn btn-md rounded-circle bg-light border mt-4" >
+                                <i class="fa fa-times text-danger"></i>
+                            </a>
+                        </td> -->
+
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                        <div class="pagination row mt-2 mb-2 d-flex justify-content-center">
+
+                            <span class="step-links d-flex justify-content-center w-100 align-items-center">
+                                <div class="text-center align-items-center mr-2">
+                                    <a class="btn btn-inverse-light" {% if orders.has_previous %}
+                                        href="?page={{ orders.previous_page_number }}" {% else %}
+                                        style="pointer-events: none;" {% endif %}>&laquo;</a>
+                                </div>
+
+                                <div class="text-center align-items-center mr-2">
+                                    <a class="btn btn-inverse-light" {% if orders.has_previous %}
+                                        href="?page={{ orders.previous_page_number }}" {% else %}
+                                        style="pointer-events: none;" {% endif %}>&#8249;</a>
+                                </div>
+
+                                <span class="current mr-2">
+                                    Page {{ orders.number }} of {{ orders.paginator.num_pages }}
+                                </span>
+
+                                <div class="text-center align-items-center mr-2">
+                                    <a class="btn btn-inverse-light" {% if orders.has_next %}
+                                        href="?page={{ orders.next_page_number }}" {% else %}
+                                        style="pointer-events: none;" {% endif %}>&#8250;</a>
+                                </div>
+
+                                <div class="text-center align-items-center">
+                                    <a class="btn btn-inverse-light" {% if orders.has_next %}
+                                        href="?page={{ orders.paginator.num_pages }}" {% else %}
+                                        style="pointer-events: none;" {% endif %}>&raquo;</a>
+                                </div>
+
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endblock %}

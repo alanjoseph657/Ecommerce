@@ -1,0 +1,81 @@
+{% extends 'base2.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <h2>Inventory</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'list_inventory' %}">Inventory</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Update Inventory Record</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card d-flex pl-3 p-3 mb-3">
+            <h2 class="mb-3">Update Inventory</h2>
+            <form method="post" action="{% url 'update_inventory' inventory_id=result.id %}">
+                {% csrf_token %}
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="product_name" class="form-label">Product Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="product_name" class="form-control bg-dark" type="text" name="product_name" disabled value="{{result.product_name}}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="variant_name" class="form-label">Variant Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="variant_name" class="form-control bg-dark" type="text" name="variant_name" disabled value="{{result.variant_name}}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="stock" class="form-label">Stock :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="stock" class="form-control" type="text" name="stock" required value="{{result.stock}}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="reorder" class="form-label">Reorder Level :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="reorder" class="form-control" type="text" name="reorder_level" required value="{{result.reorder_level}}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="deleted" class="form-label">Active :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="deleted" class="form-control bg-dark" type="text" name="deleted" disabled value="{{result.deleted}}">
+                    </div>
+                </div>
+
+                <div class="mb-3 d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-success btn-rounded mr-3 btn-lg">Save</button>                    
+            </div>  
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

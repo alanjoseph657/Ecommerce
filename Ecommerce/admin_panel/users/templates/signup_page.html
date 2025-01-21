@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+{% load static %}
+
+<!-- <style>
+    #id_captcha_1{
+        width:inherit;
+    }
+</style> -->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Sign Up | Admin</title>
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="row w-100 m-0">
+                <div class="content-wrapper full-page-wrapper auth login-bg">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+                        role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <div class="d-flex align-items-center h-100 w-100">
+                        <div class="card col-lg-4 mx-auto">
+                            <div class="card-body px-5 py-5">
+                                <h3 class="card-title text-left mb-3">Register Admin</h3>
+                                <form id="signupForm" method="post" action="{% url 'admin_signup' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text" class="form-control p_input" name="username" id="username"
+                                            required>
+                                        <div class="invalid-feedback">Username must be 5-30 characters long, contain
+                                            only
+                                            alphanumeric characters, and not start or end with hyphens or underscores.
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" class="form-control p_input" name="email" id="email"
+                                            required>
+                                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="password" class="form-control p_input" name="password"
+                                            id="password" required>
+                                        <div class="invalid-feedback">Password must be at least 8 characters long,
+                                            contain a
+                                            mix of uppercase, lowercase, numbers, and special characters.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input type="password" class="form-control p_input" name="password2"
+                                            id="password2" required>
+                                        <div class="invalid-feedback">Passwords do not match.</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Enter Captcha</label>
+                                        {{ form.captcha.errors }}
+                                        <div class="captcha-image">
+                                            {{ captcha_form.captcha|safe }}
+                                        </div>
+                                    </div>
+    
+
+                                    <div class="text-center">
+                                        <button type="submit" id="signupButton" class="btn btn-primary btn-block enter-btn">Sign
+                                            Up</button>
+                                    </div>
+
+                                    <p class="sign-up text-center">Already have an Account?<a
+                                            href="{% url 'admin_login' %}"> Log In</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" id="otpForm" action="#">
+    
+                    <div class="modal-body card px-5 py-5">
+                        {% csrf_token %}
+                        <h2> Verify Email </h2>
+                        
+    
+                        <div class="row mb-4 mt-4">
+                            <input id="otp" class="form-control" type="text" name="otp" placeholder="Enter OTP">
+                        </div>
+
+                        <button id="variantotp" type="submit" class="btn btn-success">Verify</button>
+    
+                    </div>
+                    
+                </form>
+    
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <script>
+
+        document.getElementById('signupForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            validateForm();
+        })
+
+        document.getElementById('otpForm').addEventListener('submit', function (event){
+            event.preventDefault();
+            otp = document.getElementById('otp').value;
+            email = document.getElementById('email').value;
+
+            $.ajax({
+                    url: "{% url 'verify_sign_up_otp' %}", 
+                    type: 'POST',
+                    data: {
+                        'email':email,
+                        'otp': otp,
+                        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            document.getElementById('signupForm').submit();
+                        } else {
+                            alert(response.error || 'An unknown error occurred.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('An unexpected error occurred. Please try again.');
+                    }
+                });
+
+        })
+
+        document.getElementById('username').addEventListener('blur', validateUsername);
+        document.getElementById('email').addEventListener('blur', validateEmail);
+        document.getElementById('password').addEventListener('blur', validatePassword);
+        document.getElementById('password2').addEventListener('blur', validatePassword2);
+
+        function validateUsername() {
+            var username = document.getElementById('username');
+            var usernamePattern = /^[a-zA-Z0-9]+$/;
+            if (username.value.length < 5 || username.value.length > 30 || !usernamePattern.test(username.value) || /^[\-_]/.test(username.value) || /[\-_]$/.test(username.value)) {
+                username.classList.add('is-invalid');
+                return false;
+            } else {
+                username.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+
+        function validateEmail() {
+            var email = document.getElementById('email');
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email.value)) {
+                email.classList.add('is-invalid');
+                return false;
+            } else {
+                email.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+
+        function validatePassword() {
+            var password = document.getElementById('password');
+            var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (password.value.length < 8 || !passwordPattern.test(password.value)) {
+                password.classList.add('is-invalid');
+                return false;
+            } else {
+                password.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+
+        function validatePassword2() {
+            var password2 = document.getElementById('password2');
+            var password = document.getElementById('password');
+            if (password2.value.length <= 0 || password.value !== password2.value) {
+                password2.classList.add('is-invalid');
+                return false;
+            } else {
+                password2.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+
+        function validateForm() {
+            var isValid = true;
+            if (!validateUsername()) isValid = false;
+            if (!validateEmail()) isValid = false;
+            if (!validatePassword()) isValid = false;
+            if (!validatePassword2()) isValid = false;
+
+            if (isValid) {
+                // document.getElementById('signupForm').submit();
+                document.getElementById('signupButton').disabled = True;
+                verifyEmailAndShowModal();
+            }
+        }
+
+        function verifyEmailAndShowModal() {
+                const email = document.getElementById('email').value;
+
+                if (!email) {
+                    alert('Please enter your email address.');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{% url 'verify_sign_up_email' %}", 
+                    type: 'POST',
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#otpModal').modal('show');
+                        } else {
+                            alert(response.error || 'An unknown error occurred.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('An unexpected error occurred. Please try again.');
+                    }
+                });
+            }
+
+
+
+    </script>
+
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+
+    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'assets/js/misc.js' %}"></script>
+    <script src="{% static 'assets/js/settings.js' %}"></script>
+    <script src="{% static 'assets/js/todolist.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    {% if messages %}
+    <script>
+        swal('{{messages}}', '', 'messages.tags');
+    </script>
+    {% endif %}
+</body>
+
+</html>

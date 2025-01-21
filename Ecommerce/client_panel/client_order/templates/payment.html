@@ -1,0 +1,171 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Checkout</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Checkout</li>
+    </ol>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row g-4 justify-content-end">
+            <div class="col-12">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+                        <h1 class="display-6 mb-4">Payment Information</h1>
+                        <form id="payment-form">
+                            <div class="mb-4">
+                                <label for="payment-method" class="form-label">Select Payment Method</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment-method" id="credit-card" value="credit-card">
+                                    <label class="form-check-label" for="credit-card">Credit Card</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment-method" id="upi" value="upi">
+                                    <label class="form-check-label" for="upi">UPI</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment-method" id="cash-on-delivery" value="cash-on-delivery">
+                                    <label class="form-check-label" for="cash-on-delivery">Cash on Delivery</label>
+                                </div>
+                            </div>
+                            <div id="credit-card-payment" style="display: none;">
+                                <div class="mb-4">
+                                    <label for="cardholder-name" class="form-label">Cardholder Name</label>
+                                    <input type="text" id="cardholder-name" class="form-control">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="card-number" class="form-label">Card Number</label>
+                                    <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="expiration-date" class="form-label">Expiration Date</label>
+                                    <input type="text" id="expiration-date" class="form-control" placeholder="MM/YY">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" id="cvv" class="form-control" placeholder="123">
+                                </div>
+                                <!-- <button class="btn btn-primary w-100" id="place-order-btn">Place Order</button> -->
+
+                            </div>
+                            <div id="upi-payment" style="display: none;">
+                                <div class="mb-4">
+                                    <label for="upi-id" class="form-label">UPI ID</label>
+                                    <input type="text" id="upi-id" class="form-control" placeholder="yourupiID@bankname">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="upi-app" class="form-label">UPI Payment App</label>
+                                    <select id="upi-app" class="form-select">
+                                        <option value="google-pay">Google Pay</option>
+                                        <option value="phonepe">PhonePe</option>
+                                        <option value="paytm">Paytm</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- <button class="btn btn-primary w-100" id="place-order-btn">Place Order</button> -->
+                            <a class="btn btn-primary w-100" id="place-order-btn" href="{% url 'place_order' %}?order_id={{request.GET.order_id}}">Place Order</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<script>
+    const paymentMethodRadios = document.getElementsByName('payment-method');
+    const creditCardPaymentDiv = document.getElementById('credit-card-payment');
+    const upiPaymentDiv = document.getElementById('upi-payment');
+
+    paymentMethodRadios.forEach((radio) => {
+        radio.addEventListener('change', function() {
+            switch (radio.value) {
+                case 'credit-card':
+                    creditCardPaymentDiv.style.display = 'block';
+                    upiPaymentDiv.style.display = 'none';
+                    break;
+                case 'upi':
+                    creditCardPaymentDiv.style.display = 'none';
+                    upiPaymentDiv.style.display = 'block';
+                    break;
+                case 'cash-on-delivery':
+                    creditCardPaymentDiv.style.display = 'none';
+                    upiPaymentDiv.style.display = 'none';
+                    break;
+            }
+        });
+    });
+
+</script>
+
+<script>
+    const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
+    const paymentForm = document.getElementById('payment-form');
+
+    paymentForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const cardholderName = document.getElementById('cardholder-name').value;
+        const cardNumber = document.getElementById('card-number').value;
+        const expirationDate = document.getElementById('expiration-date').value;
+        const cvv = document.getElementById('cvv').value;
+
+        stripe.createToken({
+            number: cardNumber,
+            exp_month: expirationDate.split('/')[0],
+            exp_year: expirationDate.split('/')[1],
+            cvc: cvv,
+            name: cardholderName
+        }, (status, response) => {
+            if (response.error) {
+                console.error(response.error);
+            } else {
+                const token = response.id;
+                fetch('/process-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: token,
+                        amount: 1000, 
+                        currency: 'usd'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Payment successful!');
+                    } else {
+                        console.error('Payment failed!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error processing payment:', error);
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

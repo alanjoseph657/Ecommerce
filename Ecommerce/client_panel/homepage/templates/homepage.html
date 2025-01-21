@@ -1,0 +1,378 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .testimonial-item img {
+    height: 100px; 
+    width: auto; 
+    object-fit: contain; 
+}
+.counter h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.counter h1.animate {
+    opacity: 1; 
+}
+</style>
+
+        <!-- Hero Start -->
+        <div class="container-fluid py-5 mb-5 hero-header">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-md-12 col-lg-7">
+                        <h4 class="mb-3 text-success">100% Assured Products</h4>
+                        <h1 class="mb-5 display-3 text-primary">Top Brands & Best Products</h1>
+                        <div class="position-relative mx-auto">
+                            <input class="form-control border-2 border-primary w-75 py-3 px-4 rounded-pill" type="number" placeholder="Search">
+                            <button type="submit" class="btn btn-primary border-2 border-primary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-5">
+                        <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
+                            <div class="carousel-inner" role="listbox">
+                                {% for category in request.session.categories %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %} rounded">
+                                    <img src="media/{{category.image}}" class="img-fluid bg-none rounded" alt="First slide">
+                                    <!-- <a href="#" class="btn px-4 py-2 text-white rounded w-100">{{category.category_name}}</a> -->
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hero End -->
+
+
+        <!-- Featurs Section Start -->
+        <div class="container-fluid featurs py-5">
+            <div class="container py-5">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="featurs-item text-center rounded bg-light p-4">
+                            <div class="featurs-icon btn-square rounded-circle bg-info mb-5 mx-auto">
+                                <i class="fas fa-car-side fa-3x text-white"></i>
+                            </div>
+                            <div class="featurs-content text-center">
+                                <h5>Free Shipping</h5>
+                                <p class="mb-0">Free on order over $300</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="featurs-item text-center rounded bg-light p-4">
+                            <div class="featurs-icon btn-square rounded-circle bg-info mb-5 mx-auto">
+                                <i class="fas fa-user-shield fa-3x text-white"></i>
+                            </div>
+                            <div class="featurs-content text-center">
+                                <h5>Security Payment</h5>
+                                <p class="mb-0">100% security payment</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="featurs-item text-center rounded bg-light p-4">
+                            <div class="featurs-icon btn-square rounded-circle bg-info mb-5 mx-auto">
+                                <i class="fas fa-exchange-alt fa-3x text-white"></i>
+                            </div>
+                            <div class="featurs-content text-center">
+                                <h5>30 Day Return</h5>
+                                <p class="mb-0">30 day money guarantee</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="featurs-item text-center rounded bg-light p-4">
+                            <div class="featurs-icon btn-square rounded-circle bg-info mb-5 mx-auto">
+                                <i class="fa fa-phone-alt fa-3x text-white"></i>
+                            </div>
+                            <div class="featurs-content text-center">
+                                <h5>24/7 Support</h5>
+                                <p class="mb-0">Support every time fast</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Featurs Section End -->
+
+        <div class="container-fluid fruite py-5">
+            <div class="container py-5">
+                <div class="row g-4 mb-3">
+                    <div class="col-lg-4 text-start">
+                        <h1>Shop By Categories</h1>
+                    </div>
+                </div>
+                <div class="row text-end">
+                    <ul class="nav nav-pills d-inline-flex text-center mb-5 justify-content-center">
+                        <a href="{% url 'products_view' %}">
+                            <li class="nav-item">
+                                <p class="d-flex m-2 py-2 bg-light rounded-pill">
+                                    <span class="text-dark" style="width: 130px;">All Products</span>
+                                </p>
+                            </li>
+                        </a>
+                            {% for category in request.session.categories %}
+                        <a href="{% url 'products_view' %}?slug={{category.slug}}">
+                            <li class="nav-item">
+                                <p class="d-flex m-2 py-2 bg-light rounded-pill">
+                                    <span class="text-dark" style="width: 130px;">{{category.category_name}}</span>
+                                </p>
+                            </li>
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite py-5">
+            <div class="container py-5">
+                <div class="tab-class text-center">
+                    <div class="row g-4 mb-3">
+                        <div class="col-lg-4 text-start">
+                            <h1>Latest Products</h1>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div id="{{ product.category_name }}" class="tab-pane fade show p-0 active">
+                            <div class="row g-4">
+                                <div class="col-lg-12">
+                                    <div class="row g-4">
+                                        {% for product in products %}
+                                        <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                                            <div class="rounded position-relative fruite-item border border-primary h-100 d-flex flex-column">
+                                                <div class="fruite-img d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f8f9fa;">
+                                                    {% if product.product_media %}
+                                                    <img src="/media/{{product.product_media}}" class="img-fluid w-750 h-100 rounded-top" alt="" style="object-fit: cover;">
+                                                    {% else %}
+                                                    <p class="text-center text-muted">No image available</p>
+                                                    {% endif %}
+                                                </div>
+                                    
+                                                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
+                                                    {{ product.category_name }}
+                                                </div>
+                                    
+                                                <div class="p-4 border-top-0 rounded-bottom flex-grow-1 d-flex flex-column justify-content-between">
+                                                    <h4 style="height: 60px; overflow: hidden;">{{ product.product_name }}</h4>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }}</p>
+                                                        <a href="{% url 'product_detail_view' slug=product.slug %}" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>      
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+
+
+                <!-- Banner Section Start-->
+                <div class="container-fluid banner bg-info my-5">
+                    <div class="container py-5">
+                        <div class="row g-4 align-items-center">
+                            <div class="col-lg-6">
+                                <div class="py-4">
+                                    <h1 class="display-3 text-white">Most Ordered Product of the month</h1>
+                                    <p class="fw-normal display-3 text-dark mb-4">{{most_ordered_product.product_name}}</p>
+                                    <p class="mb-4 text-dark"><strong>${{most_ordered_product.offer_price}}</strong> <s>${{most_ordered_product.price}}</s></p>
+                                    <a href="#" class="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5">BUY</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="position-relative">
+                                        <img src="{{most_ordered_image.file.url}}" class="img-fluid w-100 rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Banner Section End -->
+
+        <!-- Fact Start -->
+        <div class="container-fluid py-5">
+            <div class="container">
+                <div class="bg-light p-5 rounded">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-info"></i>
+                                <h4>satisfied customers</h4>
+                                <h1>1963</h1>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-info"></i>
+                                <h4>quality of service</h4>
+                                <h1>99%</h1>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-info"></i>
+                                <h4>quality certificates</h4>
+                                <h1>33</h1>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-info"></i>
+                                <h4>Available Products</h4>
+                                <h1>789</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fact Start -->
+
+
+        <!-- Tastimonial Start -->
+        <div class="container-fluid testimonial py-5">
+            <div class="container py-5">
+                <div class="testimonial-header text-center">
+                    <h1 class="display-5 mb-5 text-dark">Our Brands!</h1>
+                </div>
+                <div class="owl-carousel vegetable-carousel">
+                    <div class="testimonial-item img-border-radius bg-none rounded p-4">
+                        <div class="position-relative">
+                            <div class="d-flex align-items-center justify-content-center flex-nowrap">
+                                <div class="bg-none rounded d-flex justify-content-center">
+                                    <img src="{% static 'user_assets/img/brands/adidas_logo.png' %}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <div class="testimonial-item img-border-radius bg-none rounded p-4">
+                        <div class="position-relative">
+                            <div class="d-flex align-items-center justify-content-center flex-nowrap">
+                                <div class="bg-none rounded d-flex justify-content-center">
+                                    <img src="{% static 'user_assets/img/brands/mi-logo.webp' %}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item img-border-radius bg-none rounded p-4">
+                        <div class="position-relative">
+                            <div class="d-flex align-items-center justify-content-center flex-nowrap">
+                                <div class="bg-none rounded d-flex justify-content-center">
+                                    <img src="{% static 'user_assets/img/brands/nike-xxl.png' %}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item img-border-radius bg-none rounded p-4">
+                        <div class="position-relative">
+                            <div class="d-flex align-items-center justify-content-center flex-nowrap">
+                                <div class="bg-none rounded d-flex justify-content-center">
+                                    <img src="{% static 'user_assets/img/brands/puma-xxl.png' %}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item img-border-radius bg-none rounded p-4">
+                        <div class="position-relative">
+                            <div class="d-flex align-items-center justify-content-center flex-nowrap">
+                                <div class="bg-none rounded d-flex justify-content-center">
+                                    <img src="{% static 'user_assets/img/brands/samsung_logo.jpg' %}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item img-border-radius bg-none rounded p-4">
+                        <div class="position-relative">
+                            <div class="d-flex align-items-center justify-content-center flex-nowrap">
+                                <div class="bg-none rounded d-flex justify-content-center">
+                                    <img src="{% static 'user_assets/img/brands/apple.png' %}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Tastimonial End -->
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                function animateCounter(element, start, end, duration) {
+                    $(element).addClass('animate');
+                    $({ countNum: start }).animate({ countNum: end }, {
+                        duration: duration,
+                        easing: 'swing',
+                        step: function() {
+                            $(element).text(Math.floor(this.countNum));
+                        },
+                        complete: function() {
+                            $(element).text(this.countNum);
+                        }
+                    });
+                }
+            
+                function checkIfInView() {
+                    var counterSection = $('.counter');
+                    if (counterSection.length && !counterSection.hasClass('animated')) {
+                        var top_of_element = counterSection.offset().top;
+                        var bottom_of_element = counterSection.offset().top + counterSection.outerHeight();
+                        var bottom_of_screen = $(window).scrollTop() + $(window).innerHeight();
+                        var top_of_screen = $(window).scrollTop();
+            
+                        if ((bottom_of_screen > top_of_element) && (top_of_screen < bottom_of_element)) {
+                            counterSection.addClass('animated');
+                            $('.counter h1').each(function() {
+                                var endValue = parseInt($(this).text(), 10);
+                                animateCounter(this, 0, endValue, 2000);
+                            });
+                        }
+                    }
+                }
+            
+                $(window).on('scroll', checkIfInView);
+
+                $(document).ready(function () {
+                    checkIfInView();
+                });
+            });
+            </script>
+            
+
+{% endblock %}

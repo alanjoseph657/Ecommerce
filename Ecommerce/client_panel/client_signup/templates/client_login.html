@@ -1,0 +1,142 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+
+<div class="container-fluid login-header py-5">
+    <h1 class="text-center text-white display-6">Login</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Login</li>
+    </ol>
+</div>
+
+<div class="container-fluid d-flex justify-content-center py-5">
+    <div class="col-lg-5">
+        <div class="text-center rounder bg-light p-4">
+            <h3>Log in to enter</h3>
+            <form class="row login_form" method="post" id="loginForm">
+                {% csrf_token %}
+                <div class="col-md-12 form-group mb-3">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Username"
+                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required>
+                </div>
+                <div class="col-md-12 form-group mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required>
+                </div>
+                <!-- <div class="col-md-12 form-group mb-3">
+                    <div class="creat_account">
+                        <input type="checkbox" id="f-option2" name="selector">
+                        <label for="f-option2">Keep me logged in</label>
+                    </div>
+                </div> -->
+                <div class="col-md-12 form-group mb-3">
+                    <button type="submit" value="submit" class="btn btn-primary">Log In</button>
+                    <a href="#" id="forgot-pass-link">Forgot Password?</a>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <p>New to DM? <a href="{% url 'sign_up' %}">Create Account</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="otpForm" action="#">
+
+                <div class="modal-body card px-5 py-5">
+                    {% csrf_token %}
+                    <h2> Verify Email </h2>
+                    
+
+                    <div class="row mb-4 mt-4">
+                        <input id="otp" class="form-control" type="text" name="otp" placeholder="Enter OTP">
+                    </div>
+                    <input type="hidden" id="email" name="email">
+
+                    <button id="variantotp" type="submit" class="btn btn-success">Verify</button>
+
+                </div>
+                
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+    $('#forgot-pass-link').on('click', function(e) {
+        e.preventDefault();
+
+        const username = $('#name').val();
+
+        if (!username) {
+            alert('Please enter your username or email.');
+            return;
+        }
+
+        $.ajax({
+            url: '{% url "send_otp_for_password_view" %}',
+            type: 'GET',
+            data: {
+                username: username
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#email').val(response.email);
+                    $('#otpModal').modal('show');
+                } else {
+                    alert(response.error || 'An unknown error occurred.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred while sending the OTP.');
+            }
+        });
+    });
+
+    $('#otpForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const otp = $('#otp').val();
+        const email = $('#email').val();
+
+        if (!otp) {
+            alert('Please enter the OTP.');
+            return;
+        }
+
+        window.location.href = `{% url 'forgot_password_user' %}?email=${encodeURIComponent(email)}&otp=${otp}`;
+    });
+});
+
+
+  </script>
+
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

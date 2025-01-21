@@ -1,0 +1,152 @@
+{% extends 'base2.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <h2>Order : #{{order.id}}</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'orders' %}">Orders</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Order Detail</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-12 col-md-12 col-sm-12 stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-2 px-2 px-sm-3">
+                <div class="row mb-4 d-flex align-items-center justify-content-center">
+                    <h1> Order : #{{order.id}}</h1>
+
+                </div>
+
+                <h2 class="mb-2 mt-5">Product Detail</h2>
+                <div class="table-responsive mb-4 ml-3">
+                    <table class="table table-striped">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Variant Name</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_item %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{% url 'product_detail' slug=item.slug %}">{{item.product_name}}</a></td>
+                                <td>{{item.variant_name}}</td>
+                                <td>{{item.quantity}}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+                <!-- {% for item in order_item %}
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <p class="fs-125"><strong>Product:</strong> {{item.product_name}}</p>
+                            <p class="fs-125"><strong>Variant:</strong> {{item.variant_name}}</p>
+                            <p class="fs-125"><strong>Quantity:</strong> {{item.quantity}}</p>
+                        </div>
+                    </div>
+                    {% endfor %} -->
+
+                <h2 class="mb-2 mt-5">Order Detail</h2>
+                <div class="row mb-3 ml-3">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Order Status  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{order.status}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Total Price   :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">$ {{order.total_price}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Payment Status    :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{order.payment_status}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Payment Mode  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{order.payment_mode}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Reference Number  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{order.reference_number}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Placed on :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{order.created_at}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="mb-2 mt-5">User Detail</h2>
+                <div class="row mb-3 ml-3">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Username  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{user.username}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Address   :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{address.name}},</p>
+                                <p class="fs-125"> {{address.address_line1}}, {{address.address_line2}},</p>
+                                <p class="fs-125"> {{address.city}}</p>
+                                <p class="fs-125"> {{address.state}}</p>
+                                <p class="fs-125"> {{address.country}}</p>
+                                <p class="fs-125"> {{address.alt_number}}</p>
+                                <p class="fs-125"> {{address.postal_code}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

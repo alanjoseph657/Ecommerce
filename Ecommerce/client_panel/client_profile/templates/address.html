@@ -1,0 +1,224 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+
+<style>
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+</style>
+
+<div class="container-fluid profile-header py-5">
+    <h1 class="text-center text-white display-6">Address</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Address</li>
+    </ol>
+</div>
+
+<div class="container-fluid fruite py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <h4>Navigation</h4>
+                                    <ul class="list-unstyled fruite-categorie">
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'profile' %}">Profile</a>
+                                            </div>
+                                        </li>
+                                        <!-- <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#">Wishlist</a>
+                                            </div>
+                                        </li> -->
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'client_address_view' %}" class="text-info">Address</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'client_orders' %}">Orders</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9" id="addresses">
+                        <div class="row g-4 mb-5">
+                            <h4>Shipping Address</h4>
+                            {% if addresses %}
+                            {% for address in addresses %}
+                                <div class="rounded border {% if address.is_default %} border-info {% else %} border-primary {% endif %} mb-3 py-3 position-relative"
+                                    data-id="{{ address.id }}"
+                                    data-name="{{ address.name }}"
+                                    data-address-line1="{{ address.address_line1 }}"
+                                    data-address-line2="{{ address.address_line2 }}"
+                                    data-city="{{ address.city }}"
+                                    data-state="{{ address.state }}"
+                                    data-country="{{ address.country }}"
+                                    data-postal-code="{{ address.postal_code }}"
+                                    data-alt-number="{{ address.alt_number }}"
+                                    data-is-default="{{ address.is_default }}">
+                                    {% if address.is_default %}<p class="text-info">Default Address</p>{% endif %}
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <button class="btn btn-primary btn-sm edit-address-btn" data-id="{{ address.id }}"><i class="bi bi-pencil-square"></i></button>
+                                        <a class="btn btn-danger btn-sm" href="{% url 'delete_address_view' %}?address_id={{address.id}}"><i class="bi bi-trash"></i></a>
+                                    </div>
+                                    <h6>{{address.name}}</h6>
+                                    <h6>{{address.address_line1}}</h6>
+                                    <h6>{{address.address_line2}}</h6>
+                                    <h6>{{address.city}}</h6>
+                                    <h6>{{address.state}}</h6>
+                                    <h6>{{address.country}}</h6>
+                                    <h6>{{address.postal_code}}</h6>
+                                    <h6>{{address.alt_number}}</h6>
+                                </div>
+                            {% endfor %}
+                            {% else %}
+                            <div>
+                                <p class="text-center">No address added</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row g-4">
+                            <button id="add-address-btn" class="btn btn-secondary col-lg-2">Add Address</button>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div id="add-address-form-container" class="row g-4 mb-5" style="display:none;">
+                            <h4>Add/Edit Address</h4>
+                            <form id="add-address-form" method="post" action="{% url 'add_edit_address_view' %}">
+                                {% csrf_token %}
+                                <input type="hidden" id="address_id" name="address_id">
+                                <div class="form-group mb-3">
+                                    <label for="name">Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="address1">Building/Door No.</label>
+                                    <input type="text" class="form-control" id="address1" name="address1" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="address2">Area/Locality</label>
+                                    <input type="text" class="form-control" id="address2" name="address2" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="city">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="state">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="country">Country</label>
+                                    <input type="text" class="form-control" id="country" name="country" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="postal_code">Postal Code</label>
+                                    <input type="number" class="form-control" id="postal_code" name="postal_code" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="contact">Contact</label>
+                                    <input type="number" class="form-control" id="contact" name="contact" value="" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="default">Set as Default</label>
+                                    <input type="checkbox" class="ml-4" id="default" name="default">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addAddressBtn = document.getElementById('add-address-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const addresses = document.getElementById('addresses');
+
+        const addAddressForm = document.getElementById('add-address-form-container');
+        const addAddressFormElement = document.getElementById('add-address-form');
+        const editButtons = document.querySelectorAll('.edit-address-btn');
+        // const currentEmail = "{{ user.email }}";
+
+        addAddressBtn.addEventListener('click', function() {
+            addresses.style.display = 'none';
+            addAddressForm.style.display = 'block';
+        });
+
+        cancelEditBtn.addEventListener('click', function() {
+            addresses.style.display = 'block';
+            addAddressForm.style.display = 'none';
+        });
+
+        editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+        const addressId = this.getAttribute('data-id');
+        const addressBlock = document.querySelector(`div[data-id="${addressId}"]`);
+
+        if (addressBlock) {
+            addresses.style.display = 'none';
+            addAddressForm.style.display = 'block';
+
+            document.getElementById('address_id').value = addressBlock.getAttribute('data-id');
+            document.getElementById('name').value = addressBlock.getAttribute('data-name');
+            document.getElementById('address1').value = addressBlock.getAttribute('data-address-line1');
+            document.getElementById('address2').value = addressBlock.getAttribute('data-address-line2');
+            document.getElementById('city').value = addressBlock.getAttribute('data-city');
+            document.getElementById('state').value = addressBlock.getAttribute('data-state');
+            document.getElementById('country').value = addressBlock.getAttribute('data-country');
+            document.getElementById('postal_code').value = addressBlock.getAttribute('data-postal-code');
+            document.getElementById('contact').value = addressBlock.getAttribute('data-alt-number');
+            document.getElementById('default').checked = addressBlock.getAttribute('data-is-default') === 'true';
+        }
+    });
+});
+
+    });
+</script>
+
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endblock %}

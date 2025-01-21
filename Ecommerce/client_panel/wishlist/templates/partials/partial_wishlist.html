@@ -1,0 +1,40 @@
+{% for product in wishlist %}
+<div class="col-md-3 col-lg-3 col-xl-3 mb-4">
+    <div
+        class="rounded position-relative fruite-item border border-primary h-100 d-flex flex-column">
+        <div class="fruite-img d-flex align-items-center justify-content-center"
+            style="height: 200px; background-color: #f8f9fa;">
+            {% if product.media_file %}
+            <img src="/media/{{product.media_file}}" class="img-fluid w-750 h-100 rounded-top" alt="" style="object-fit: cover;">
+            {% else %}
+            <p class="text-center text-muted">No image available</p>
+            {% endif %}
+        </div>
+
+        <a class="text-white " href="{% url 'remove_from_wislist' %}?product_id={{product.product_id}}">
+            <div class="bg-primary px-3 py-1 rounded position-absolute"
+                style="top: 10px; left: 10px;">
+                    <i class="bi bi-trash"></i>
+            </div>
+        </a>
+
+        <div
+            class="p-4 border-top-0 rounded-bottom flex-grow-1 d-flex flex-column justify-content-between">
+            <h4 style="height: 60px; overflow: hidden;">{{ product.product_name }}</h4>
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }}</p>
+                {% if not product.is_active or product.stock == 0 %}
+                <button class="btn border border-secondary rounded-pill px-3 text-primary" disabled> Unavailable
+                </button>
+                
+                {% else %}
+                <a href="{% url 'product_detail_view' slug=product.slug %}"
+                    class="btn border border-secondary rounded-pill px-3 text-primary">
+                    <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

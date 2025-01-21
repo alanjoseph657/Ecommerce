@@ -1,0 +1,157 @@
+{% extends 'base2.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <h2>Orders</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+                    <li class="breadcrumb-item active"><a href="{% url 'orders' %}">Orders</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+<div class="row d-flex justify-content-center align-items-center">
+    <form class="w-100" method="get" action="{% url 'orders' %}">
+        <div class="col-12">
+            <div class="card mb-3 bg-none">
+                <div class="card-body py-0 px-0 px-sm-3">
+                    <div class="row align-items-center">
+                        <div class="col-12 d-flex align-items-center">
+                            <select id="order_status" name="order_status" class="form-control text-light mr-2">
+                                <option value="" selected>-- Filter Status --</option>
+                                <option value="PENDING" {% if request.GET.order_status == "PENDING" %}selected
+                                {%endif %}>Pending</option>
+                                <option value="SHIPPED" {% if request.GET.order_status == "SHIPPED" %}selected
+                                {% endif %}>Shipped</option>
+                                <option value="DELIVERED" {% if request.GET.order_status == "DELIVERED" %}selected
+                                {% endif %}>Delivered</option>
+                                <option value="CANCELLED" {% if request.GET.order_status == "CANCELLED" %}selected
+                                {% endif %}>Cancelled</option>
+                            </select>
+
+                            <input type="text" class="form-control" placeholder="Search Order Number"
+                                name="search_number" {% if request.GET.search_number %}
+                                value="{{request.GET.search_number}}"{% endif %} id="search_number">
+
+                            <button class="btn btn-dark" type="submit"><i class="mdi mdi-magnify "></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+
+        <div class="card p-3 mb-3">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order ID</th>
+                            <th>Status</th>
+                            <!-- <th>Description</th> -->
+                            <th>Payment Reference</th>
+                            <th>Placed on</th>
+                            <!-- <th>Inventory</th> -->
+                            <th>Action</th>
+                            <!-- <th>Delete</th> -->
+                        </tr>
+                    </thead>
+                    <tbody id="order-table-body">
+                        {% if not result.error %}
+                        {% for i in result.paginated_orders %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{i.id}}</td>
+                            <td>{{i.status}}</td>
+                            <td>{{i.reference_number}}</td>
+                            <td>{{i.created_at}}</td>
+                            
+                            <td><a href="{% url 'order_detail' order_id=i.id %}"><i class=" mdi mdi-eye "></i> View</a>
+                            </td>
+                            <!-- <td><a href="#"> <i class="mdi mdi-delete"></i> Delete</a></td> -->
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pagination row stretch-card">
+
+    <span class="step-links d-flex justify-content-center w-100">
+
+        <div class="text-center align-items-center mr-2">
+            <a class="btn btn-inverse-light" {% if not result.paginated_orders.has_previous %}
+                style="pointer-events: none;" {% else %} 
+                href="?order_status={{request.GET.order_status}}&search_number={{request.GET.search_number}}&page=1" 
+                {% endif %}>&laquo;</a>
+        </div>
+        <div class="text-center align-items-center mr-2">
+            <a class="btn btn-inverse-light" {% if not result.paginated_orders.has_previous %}
+                style="pointer-events: none;" {% else %}
+                href="?order_status={{request.GET.order_status}}&search_number={{request.GET.search_number}}&page={{ result.paginated_orders.previous_page_number }}" 
+                {% endif %}>&#8249;</a>
+        </div>
+
+        <span class="current mr-2">
+            Page {% if result.paginated_orders.number %}{{ result.paginated_orders.number }} of {{ result.paginated_orders.paginator.num_pages }} {% else %} 1 of 1{% endif %}
+        </span>
+
+        <div class="text-center align-items-center mr-2">
+            <a class="btn btn-inverse-light" {% if result.paginated_orders.has_next %}
+                href="?order_status={{request.GET.order_status}}&search_number={{request.GET.search_number}}&page={{ result.paginated_orders.next_page_number }}" 
+                {% else %} style="pointer-events: none;" {% endif %}>&#8250;</a>
+        </div>
+        <div class="text-center align-items-center">
+            <a class="btn btn-inverse-light" {% if result.paginated_orders.has_next %}
+                href="?order_status={{request.GET.order_status}}&search_number={{request.GET.search_number}}&page={{ result.paginated_orders.paginator.num_pages }}" 
+                {% else %} style="pointer-events: none;" {% endif %}>&raquo;</a>
+        </div>
+
+    </span>
+</div>
+
+<script>
+    function updateOrderTable() {
+        var status = $('#status').val();
+        var url;
+        if (status) {
+            url = "{% url 'list_order_status_filter' status=12345 %}".replace('12345', status);
+        } else {
+            url = "{% url 'orders' %}";
+        }
+        $.ajax({
+            url: url,
+            success: function (response) {
+                console.log(response)
+                if (!response.error) {
+                    $('#order-table-body').html(response.html_table);
+                    $('.pagination').html(response.html_pagination);
+
+                } else {
+                    alert(response.error);
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

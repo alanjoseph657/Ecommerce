@@ -1,0 +1,189 @@
+{% extends 'base2.html' %}
+{% block content %}
+
+<style>
+    .badge {
+        z-index: 1000;
+        border-radius: 50%;
+        filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 1));
+    }
+
+    .badge:hover {
+        cursor: pointer;
+    }
+</style>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <h2>Edit Product Details</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'list_all_products' %}">Products</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Product</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card d-flex pl-3 p-3 mb-3">
+            <h3 class="mb-4">Product Details</h3>
+            <form method="post" action="{% url 'edit_product_detail_form' product_id=product.id %}"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="category" class="form-label">Category Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <select id="category" name="category" class="form-control text-light" required>
+                            {% for id, category_name in categories %}
+                            <option value="{{id}}" {% if id is product.category_id %} selected {% endif %}>{{category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="product_name" class="form-label">Product Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="product_name" class="form-control" type="text" name="product_name"
+                            value="{{product.product_name}}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-start">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="description" class="form-label">Description :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <textarea id="description" name="description"
+                            class="form-control">{{product.description}}</textarea>
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="price" class="form-label">Price :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="price" class="form-control" type="number" name="price" value="{{product.price}}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="offer_price" class="form-label">Offer Price :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="offer_price" class="form-control" type="number" name="offer_price"
+                            value="{{product.offer_price}}">
+                    </div>
+                </div>
+
+                <!-- <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="category_name" class="form-label">Product Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="category_name" class="form-control" type="text" name="product_name" required>
+                    </div>
+                </div> -->
+                <!-- 
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="active" class="form-label">Active :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <select id="active" name="active" class="form-control text-light" aria-label="Default select example">
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                          </select>
+                    </div>
+                </div> -->
+
+                <div class="mb-3 d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-success btn-rounded btn-lg mr-3">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card d-flex pl-3 p-3 mb-3">
+            <h3 class="mb-4">Product Gallery</h3>
+
+            <form method="post" action="{% url 'edit_product_gallery_form' product_id=product.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center flex-wrap">
+                    {% for files in media %}
+                    <div class="position-relative mb-2 mb-md-0 col-12 col-md-2">
+                        <span class="position-absolute badge rounded-pill bg-none mdi mdi-close text-dark" id="mediaselect"
+                        data-file-id="{{files.id}}">
+                        </span>
+                        {% if file.media_type == IMAGE %}
+                        <img src="{{files.file.url}}" class="d-block w-100 h-75 mb-3" alt="image1">
+                        {% else %}
+                        <video name='product_video' controls autoplay class="d-block w-100 h-75">
+                            <source src="{{files.file.url}}" type="video/mp4">
+                            </source>
+                        </video>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="media_files" class="form-label">Upload Media Files :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="media_files" class="form-control" type="file" name="media_files" multiple>
+                    </div>
+                    
+                </div>
+                <br>
+                <input type="text" id="file_ids" name="file_ids" hidden>
+
+
+                <div class="mb-3 d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-success btn-rounded btn-lg mr-3">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        const badges = document.querySelectorAll('.badge')
+        const fileIdInputs = document.getElementById('file_ids');
+        let fileIds = []
+
+        badges.forEach(badge =>{
+            badge.addEventListener('click',function(){
+                const FileContainer = badge.closest('.col-12.col-md-2');
+                const fileId = badge.dataset.fileId
+                FileContainer.style.display = "none";
+                fileIds.push(fileId);
+                fileIdInputs.value = fileIds.join(',');
+                console.log(fileId)
+            })
+        })
+    });
+</script>
+
+{% endblock %}

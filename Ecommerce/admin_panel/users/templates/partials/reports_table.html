@@ -1,0 +1,15 @@
+{% if not result.error %}
+{% for i in result.reports %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{i.report_name}}</td>
+    <td>{{i.admin}}</td>
+    <td>{{i.user_id}}</td>
+    <td>{{i.client_name}}</td>
+    <td>{{i.created_at}}</td>
+    <td><a href="{% url 'report_detail' report_id=i.id %}"><i class=" mdi mdi-eye "></i> View</a>
+    </td>
+    <!-- <td><a href="#"> <i class="mdi mdi-delete"></i> Delete</a></td> -->
+</tr>
+{% endfor %}
+{% endif %}

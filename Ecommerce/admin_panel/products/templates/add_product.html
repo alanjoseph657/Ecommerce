@@ -1,0 +1,120 @@
+{% extends 'base2.html' %}
+{% block content %}
+
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card p-3 mb-3">   
+        <div class="card-body py-0 px-0 px-sm-3">
+          <div class="row align-items-center">
+                <h2>Add Product</h2>
+          </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'list_all_products' %}">Products</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Add Product</li>
+            </ol>
+          </nav>
+      </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card d-flex pl-3 p-3 mb-3">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="category" class="form-label">Category Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <select id="category" name="category" class="form-control text-light" required>
+                            {% for id, category_name in categories %}
+                                <option value="{{id}}">{{ category_name }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="product_name" class="form-label">Product Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="product_name" class="form-control" type="text" name="product_name" required>
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-start">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="description" class="form-label">Description :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <textarea id="description" name="description" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="price" class="form-label">Price :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="price" class="form-control" type="number" name="price" required>
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="offer_price" class="form-label">Offer Price :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="offer_price" class="form-control" type="number" name="offer_price">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="media_files" class="form-label">Upload Media Files :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="media_files" class="form-control" type="file" name="media_files" multiple>
+                    </div>
+                </div>
+
+                <!-- <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="category_name" class="form-label">Product Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="category_name" class="form-control" type="text" name="product_name" required>
+                    </div>
+                </div> -->
+<!-- 
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="active" class="form-label">Active :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <select id="active" name="active" class="form-control text-light" aria-label="Default select example">
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                          </select>
+                    </div>
+                </div> -->
+
+                <div class="mb-3 d-flex justify-content-center align-items-center">
+                        <button type="submit" class="btn btn-success btn-rounded mr-3">Save</button>                    
+                        <button type="reset" class="btn btn-info btn-rounded ">Reset</button>
+                </div>                
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

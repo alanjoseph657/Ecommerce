@@ -1,0 +1,82 @@
+.navbar a {
+    color: white !important;
+}
+
+.navbar a:hover {
+    color: #ccc !important; 
+}
+
+.nav a {
+    font-size: 80%;
+}
+
+.nav a:hover {
+    font-weight: bold;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255,1);
+    color: white; 
+}
+
+.dropdown-menu{
+    border: none;
+    box-shadow: 0px 2px 5px rgba(114, 114, 114, 0.534);
+}
+
+.dropdown-menu a {
+    color:black !important;
+}
+
+.dropdown-menu a:hover {
+    color: #414141 !important; 
+    font-weight: bold;
+}
+
+.nav-item.dropdown .dropdown-menu {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    opacity: 1;
+    visibility: visible;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+.main-carousel { 
+    min-height: 50vh;
+}
+
+.main-carousel button{
+    filter: drop-shadow(0px 2px 2px rgba(94, 94, 94, 0.534))
+}

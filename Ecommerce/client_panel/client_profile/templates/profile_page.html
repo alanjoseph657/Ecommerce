@@ -1,0 +1,232 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+<style>
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
+    
+
+<div class="container-fluid profile-header py-5">
+    <h1 class="text-center text-white display-6">Profile</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Profile</li>
+    </ol>
+</div>
+
+<div class="container-fluid fruite py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <h4>Navigation</h4>
+                                    <ul class="list-unstyled fruite-categorie">
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'profile' %}" class="text-info">Profile</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'wishlist' %}">Wishlist</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'client_address_view' %}">Address</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'client_orders' %}">Orders</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9" id="profile-info">
+                        <div class="row g-4 mb-5">
+                            <h4>Profile</h4>
+                            <div>
+                                <span>Username</span>
+                                <h5>{{user}}</h5>
+                            </div>
+                            <div>
+                                <span>Email</span>
+                                <h5>{{user.email}}</h5>
+                            </div>
+                            <div>
+                                <span>Contact</span>
+                                <h5>{% if profile.phone_number %}{{profile.phone_number}}{% else %} -- {% endif %}</h5>
+                            </div>
+
+                        </div>
+
+                        <div class="row g-4">
+                            <button id="edit-profile-btn" class="btn btn-secondary col-lg-2">Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div id="edit-profile-form-container" class="row g-4 mb-5" style="display:none;">
+                            <h4>Edit Profile</h4>
+                            <form id="edit-profile-form" method="post" action="{% url 'update_user_profile' %}">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="phone_number">Contact</label>
+                                    <input type="number" class="form-control" id="phone_number" name="phone_number" value="{{ profile.phone_number }}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="otpForm">
+
+                <div class="modal-body card px-5 py-5">
+                    {% csrf_token %}
+                    <h2> Verify Email </h2>
+                    
+
+                    <div class="row mb-4 mt-4">
+                        <input id="otp" class="form-control" type="text" name="otp" placeholder="Enter OTP">
+                    </div>
+
+                    <button id="variantotp" type="submit" class="btn btn-success">Verify</button>
+
+                </div>
+                
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const profileInfo = document.getElementById('profile-info');
+        const editProfileForm = document.getElementById('edit-profile-form-container');
+        const editProfileFormElement = document.getElementById('edit-profile-form');
+        const currentEmail = "{{ user.email }}";
+        const otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
+        const otpForm = document.getElementById('otpForm');
+
+        editProfileBtn.addEventListener('click', function() {
+            profileInfo.style.display = 'none';
+            editProfileForm.style.display = 'block';
+        });
+
+        cancelEditBtn.addEventListener('click', function() {
+            profileInfo.style.display = 'block';
+            editProfileForm.style.display = 'none';
+        });
+
+        editProfileFormElement.addEventListener('submit', function(event){
+            event.preventDefault();
+            var newEmail = $('#email').val();  
+
+            if (newEmail !== currentEmail) {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'generate_otp_for_email_view' %}",
+                    data: {
+                        email: newEmail,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        if (data.success) {
+                            $('#otpModal').modal('show');  
+                        } else {
+                            alert(data.error); 
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('AJAX Error:', status, error);
+                    }
+                });
+            } else {
+                this.submit(); 
+            }
+        });
+        
+        otpForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const otp = document.getElementById('otp').value;
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'generate_otp_for_email_view' %}",
+                    data: {
+                        otp: otp,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        if (data.success) {
+                            editProfileFormElement.submit();
+                        } else {
+                            alert(data.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                    console.log('AJAX Error:', status, error);
+                }
+            });
+        });
+
+
+    });
+</script>
+
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endblock %}

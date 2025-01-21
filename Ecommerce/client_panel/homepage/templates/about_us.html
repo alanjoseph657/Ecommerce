@@ -1,0 +1,54 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+<div class="container-fluid profile-header py-5">
+    <h1 class="text-center text-white display-6">About Us</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">About Us</li>
+    </ol>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <h3>About Us</h3>
+                </div>
+                <div class="row g-4">
+                    <p>
+                        Welcome to DM, your number one store. We're dedicated to providing you with the very best
+                        products, with a focus on quality, customer service, and uniqueness.
+                    </p>
+                    <p>
+                        Founded in 0000 by ABCD, DM has come a long way from its beginnings in New York. When ABCD first
+                        started out, their passion drove them to start this business, so that DM can offer you [What
+                        Makes Your Products Unique]. We now serve customers all over [Your Country/Region], and are
+                        thrilled that we're able to turn our passion into our own website.
+                    </p>
+                    <p>
+                        We believe in offering great products that can make a difference in your everyday life. Our team
+                        works tirelessly to curate and source the best [Product Type], ensuring that you receive only
+                        the finest items. Whether you're here to shop for yourself or find the perfect gift, we're
+                        confident that you'll find something you love.
+                    </p>
+                    <p>
+                        Our commitment to customer satisfaction is unmatched. From our easy-to-navigate website to our
+                        responsive customer support, every aspect of our business is designed with you in mind. We
+                        understand that trust is the foundation of any good relationship, which is why we prioritize
+                        transparency and honesty in every transaction.
+                    </p>
+                    <p>
+                        Thank you for visiting DM. We hope you enjoy our products as much as we enjoy offering them to
+                        you. If you have any questions or comments, please don't hesitate to contact us.
+                    </p>
+                    <p>
+                        Happy shopping!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base2.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <h2>Message Detail</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+                    <li class="breadcrumb-item active"><a href="{% url 'messages_page' %}">Messages</a></li>
+                    <li class="breadcrumb-item active">Message Detail</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-12 col-md-12 col-sm-12 stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-2 px-2 px-sm-3">
+                <div class="row mb-3 ml-3">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Name  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{message_detail.name}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Email   :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{message_detail.email}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Messages  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{message_detail.message}}</p>
+                            </div>
+                        </div>
+                        {% if updated %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="fs-125"><strong>Updated by  :</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="fs-125">{{updated}}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'update_message_status' %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="fs-125"><strong>Status  :</strong></p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="status">
+                                        {% for status in status_options %}
+                                            <option value="{{ status }}" {% if message_detail.status == status %}selected{% endif %}>
+                                                {{ status }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="message_id" value="{{message_detail.id}}">
+                                </div>
+                            </div>
+                            <div class="row mt-5 justify-content-center">
+                                <div class="col-sm-3">
+                                    <button type="submit" class="btn btn-lg btn-success btn-rounded">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

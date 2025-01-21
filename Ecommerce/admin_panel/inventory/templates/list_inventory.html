@@ -1,0 +1,196 @@
+{% extends 'base2.html' %}
+{% block content %}
+<style>
+    .suggestions-list {
+        border: 1px solid rgb(211, 211, 211);
+        max-height: 200px;
+        overflow-y: auto;
+        position: absolute;
+        width: 100%;
+        background-color: black;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .suggestion-item {
+        padding: 8px;
+        cursor: pointer;
+    }
+    
+    .suggestion-item:hover {
+        background-color: #444444;
+    }
+    </style>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card p-3 mb-3">
+        <div class="card-body py-0 px-0 px-sm-3">
+          <div class="row align-items-center">
+                <h2>Inventory</h2>
+          </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'list_inventory' %}">Inventory</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Active Inventory</li>
+            </ol>
+          </nav>
+      </div>
+    </div>
+</div>
+
+<div class="row d-flex align-items-center">
+    <div class="col-lg-4 col-md-12 col-sm-12 grid-margin">
+        <div class="card p-3 mb-3" style="height: 115px;">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <h4>Current Inventory</h4><h1>{{inventory_count}}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-12 col-sm-12 grid-margin">
+        <div class="card p-3 mb-3" style="height: 115px;">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <h4>Active Products</h4><h1>{{product}}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-12 col-sm-12 grid-margin">
+        <div class="card p-3 mb-3" style="height: 115px;">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <h4>Variants</h4><h1>{{variants}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="row">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card mb-3 bg-none">
+        <div class="card-body py-0 px-0 px-sm-3">
+          <div class="row align-items-center">
+            <a href="#" class="w-100 btn btn-success btn-block p-2"><strong>+ Create new Record</strong></a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+</div> -->
+<div class="row">
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="card mb-5 bg-none">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <form class="w-100" method="get" action="{% url 'list_inventory' %}">
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control" placeholder="Search Product Name"
+                                {% if request.GET.search_query %} value="{{request.GET.search_query}}" {% endif %}
+                                name="search_query" id="search_query">
+                            <button class="btn btn-dark" type="submit"><i class="mdi mdi-magnify "></i></button>
+                        </div>
+                        <div id="suggestions" class="suggestions-list"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+
+        <div class="card p-3 mb-3">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Variant</th>
+                            <th>Stock</th>
+                            <th>Reorder at</th>
+                            <th>Edit</th>
+                            <!-- <th>Delete</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in inventory %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{% url 'product_detail' slug=i.slug %}">{{i.product_name}}</a></td>
+                                <td>{{i.variant_name}}</td>
+                                <td>{{i.stock}}</td>
+                                <td>{{i.reorder_level}}</td>
+                                <td><a href="{% url 'update_inventory' inventory_id=i.id %}"><i class="mdi mdi-tooltip-edit "></i> Edit</a></td>
+                                <!-- <td><a href="#"> <i class="mdi mdi-delete"></i> Delete</a></td> -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pagination row stretch-card">
+   
+    <span class="step-links d-flex justify-content-center w-100">
+        
+            <div class="text-center align-items-center mr-2">
+                <a class="btn btn-inverse-light" {% if not inventory.has_previous %} style="pointer-events: none;"{% else %} 
+                href="?search_query={{ request.GET.search_query }}&page=1" {% endif %}>&laquo;</a>
+            </div>
+            <div class="text-center align-items-center mr-2">
+                <a class="btn btn-inverse-light"{% if not inventory.has_previous %} style="pointer-events: none;"{% else %} 
+                href="?search_query={{ request.GET.search_query }}&page={{ inventory.previous_page_number }}" {% endif %}>&#8249;</a>
+            </div>
+        
+            <span class="current mr-2">
+                Page {% if inventory.number %}{{ inventory.number }} of {{ inventory.paginator.num_pages }}{% else %} 1 of 1 {% endif %}
+            </span>
+        
+            <div class="text-center align-items-center mr-2">
+                <a class="btn btn-inverse-light" {% if inventory.has_next %} 
+                href="?search_query={{ request.GET.search_query }}&page={{ inventory.next_page_number }}" {% else %} style="pointer-events: none;" {% endif %}>&#8250;</a>
+            </div>
+            <div class="text-center align-items-center">
+                <a class="btn btn-inverse-light" {% if inventory.has_next %} 
+                href="?search_query={{ request.GET.search_query }}&page={{ inventory.paginator.num_pages }}" {% else %} style="pointer-events: none;" {% endif %}>&raquo;</a>
+            </div>
+        
+    </span>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('search_query').addEventListener('input', function () {
+                var query = this.value;
+                var suggestions = document.getElementById('suggestions');
+                if (query.length > 1) {
+                    fetch('{% url "product_search_suggestions" %}?q=' + query)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestions.style.display = 'block';
+                            suggestions.innerHTML = '';
+                            data.forEach(function (item) {
+                                var suggestionItem = document.createElement('div');
+                                suggestionItem.classList.add('suggestion-item');
+                                suggestionItem.textContent = item.id + ' - ' + item.name;
+                                suggestionItem.addEventListener('click', function () {
+                                    document.getElementById('search_query').value = item.name;
+                                    suggestions.innerHTML = '';
+                                });
+                                suggestions.appendChild(suggestionItem);
+                            });
+                        });
+                } else {
+                    document.getElementById('suggestions').innerHTML = '';
+                }
+            });
+        });
+</script>
+
+{% endblock %}

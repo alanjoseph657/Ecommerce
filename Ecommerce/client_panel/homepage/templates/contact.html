@@ -1,0 +1,97 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+<div class="container-fluid profile-header py-5">
+    <h1 class="text-center text-white display-6">Contact Us</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Contact Us</li>
+    </ol>
+</div>
+
+<div class="container-fluid contact py-5">
+    <div class="container py-5">
+        <div class="p-5 bg-light rounded">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="text-center mx-auto" style="max-width: 700px;">
+                        <h1 class="text-primary">Get in touch</h1>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="h-100 rounded">
+                        <iframe class="rounded w-100"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d337.40564291539204!2d76.34565064760554!3d10.003286320584344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080c93f9cf65f1%3A0x6950aa893581bceb!2sDigital%20Mesh%20Softech%20India%20P%20Limited!5e0!3m2!1sen!2sin!4v1724308110897!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" class="w-100 form-control border-0 py-3 mb-4" placeholder="Your Name" name="name" required>
+                        <input type="email" class="w-100 form-control border-0 py-3 mb-4" placeholder="Enter Your Email" name="email" required>
+                        <textarea class="w-100 form-control border-0 mb-4" rows="5" cols="10" placeholder="Your Message" name="message" required></textarea>
+                        <button class="w-100 btn form-control border-primary py-3 bg-white text-primary " type="submit">Submit</button>
+                    </form>
+                </div>
+                <div class="col-lg-5">
+                    <div class="d-flex p-4 rounded mb-4 bg-white">
+                        <i class="fas fa-map-marker-alt fa-2x text-primary me-4"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p class="mb-2">123 Street New York.USA</p>
+                        </div>
+                    </div>
+                    <div class="d-flex p-4 rounded mb-4 bg-white">
+                        <i class="fas fa-envelope fa-2x text-primary me-4"></i>
+                        <div>
+                            <h4>Mail Us</h4>
+                            <p class="mb-2">info@example.com</p>
+                        </div>
+                    </div>
+                    <div class="d-flex p-4 rounded bg-white">
+                        <i class="fa fa-phone-alt fa-2x text-primary me-4"></i>
+                        <div>
+                            <h4>Telephone</h4>
+                            <p class="mb-2">(+012) 3456 7890</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        const emailInput = document.querySelector('input[name="email"]');
+        const emailValue = emailInput.value;
+
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+        if (!emailPattern.test(emailValue)) {
+            Swal.fire('Invalid Email', 'Please enter a valid email address.', 'error');
+        } else {
+            this.submit();
+        }
+    });
+</script>
+
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,529 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>DM Admin</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="{% static 'assets/vendors/jvectormap/jquery-jvectormap.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/owl-carousel-2/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/owl-carousel-2/owl.theme.default.min.css' %}">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <!-- endinject -->
+  <!-- Layout styles -->
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+
+  <!-- End layout styles -->
+  <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+
+
+</head>
+<!-- <style>
+  .card{
+    box-shadow: 3px 5px 4px rgba(83, 83, 83, 0.9);
+  }
+</style> -->
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+        <a class="sidebar-brand brand-logo" href="{% url 'dashboard_view' %}"><h1 class="text-light">DM</h1></a>
+        <a class="sidebar-brand brand-logo-mini" href="{% url 'dashboard_view' %}"><h2 class="text-light">DM</h2></a>
+      </div>
+      <ul class="nav">
+        <li class="nav-item profile">
+          <div class="profile-desc">
+            <div class="profile-pic">
+              <div class="count-indicator">
+                <img class="img-xs rounded-circle " src="{% static 'assets/images/faces/face15.jpg' %}" alt="">
+                <span class="count bg-success"></span>
+              </div>
+              <div class="profile-name">
+                <h5 class="mb-0 font-weight-normal">{{request.user.username}}</h5>
+              </div>
+            </div>
+            <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+            <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list"
+              aria-labelledby="profile-dropdown">
+              <!-- <a href="#" class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-dark rounded-circle">
+                    <i class="mdi mdi-settings text-primary"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                </div>
+              </a> -->
+              <div class="dropdown-divider"></div>
+              <a href="{% url 'password_reset' %}" class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-dark rounded-circle">
+                    <i class="mdi mdi-onepassword  text-info"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="{% url 'delete_account' %}" class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-dark rounded-circle">
+                    <i class="mdi mdi-delete-forever text-danger"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <p class="preview-subject ellipsis mb-1 text-small">Delete Account</p>
+                </div>
+              </a>
+              <a class="dropdown-item preview-item" href="{% url 'admin_logout' %}">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-dark rounded-circle">
+                    <i class="mdi mdi-logout text-danger"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <p class="preview-subject mb-1">Log out</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item nav-category">
+          <span class="nav-link">Navigation</span>
+        </li>
+
+        <li class="nav-item menu-items">
+          <a class="nav-link" href="{% url 'dashboard_view'   %}">
+            <span class="menu-icon">
+              <i class=" mdi mdi-chart-bubble "></i>
+            </span>
+            <span class="menu-title">Dashboard</span>
+          </a>
+        </li> 
+
+        <li class="nav-item menu-items">
+          <a class="nav-link" data-toggle="collapse" href="#ui-category" aria-expanded="false"
+            aria-controls="ui-category">
+            <span class="menu-icon">
+              <i class=" mdi mdi-source-branch "></i>
+            </span>
+            <span class="menu-title">Categories</span>
+            <i class="menu-arrow"></i>
+          </a>
+          <div class="collapse" id="ui-category">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{% url 'list_all_categories' %}">Manage Categories</a>
+              </li>
+              <li class="nav-item"> <a class="nav-link" href="{% url 'create_category' %}">Add Category</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-item menu-items">
+          <a class="nav-link" data-toggle="collapse" href="#ui-product" aria-expanded="false"
+            aria-controls="ui-product">
+            <span class="menu-icon">
+              <i class="mdi mdi-soccer "></i>
+            </span>
+            <span class="menu-title">Products</span>
+            <i class="menu-arrow"></i>
+          </a>
+          <div class="collapse" id="ui-product">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{% url 'list_all_products' %}">Manage Products</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url 'add_product' %}">Add Product</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-item menu-items">
+          <a class="nav-link" data-toggle="collapse" href="#ui-order" aria-expanded="false" aria-controls="ui-category">
+            <span class="menu-icon">
+              <i class=" mdi mdi-view-list"></i>
+            </span>
+            <span class="menu-title">Orders</span>
+            <i class="menu-arrow"></i>
+          </a>
+          <div class="collapse" id="ui-order">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{% url 'orders' %}">All orders</a>
+              </li>
+              <li class="nav-item"> <a class="nav-link" href="{% url 'search_order_by_product' %}">Product Orders</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        
+        <li class="nav-item menu-items">
+          <a class="nav-link" href="{% url 'list_inventory' %}">
+            <span class="menu-icon">
+              <i class="mdi mdi-store "></i>
+            </span>
+            <span class="menu-title">Inventory</span>
+          </a>
+        </li>
+
+        <li class="nav-item menu-items">
+          <a class="nav-link" data-toggle="collapse" href="#ui-report" aria-expanded="false"
+            aria-controls="ui-report">
+            <span class="menu-icon">
+              <i class=" mdi mdi-account-card-details "></i>
+            </span>
+            <span class="menu-title">Client Report</span>
+            <i class="menu-arrow"></i>
+          </a>
+          <div class="collapse" id="ui-report">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{% url 'client_report_list' %}">All Reports</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url 'reports_by_admin' %}">My Reports</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-item menu-items">
+          <a class="nav-link" href="{% url 'messages_page' %}">
+            <span class="menu-icon">
+              <i class=" mdi mdi-email "></i>
+            </span>
+            <span class="menu-title">Messages</span>
+          </a>
+        </li> 
+
+        <!-- <li class="nav-item menu-items">
+          <a class="nav-link" href="#">
+            <span class="menu-icon">
+              <i class=" mdi mdi-newspaper "></i>
+            </span>
+            <span class="menu-title">Advertisements</span>
+          </a>
+        </li> -->
+
+
+      </ul>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_navbar.html -->
+      <nav class="navbar p-0 fixed-top d-flex flex-row">
+        <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+          <a class="navbar-brand brand-logo-mini" href="index.html"><img
+              src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
+        </div>
+        <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-menu"></span>
+          </button>
+          <ul class="navbar-nav w-100">
+            <li class="nav-item w-100">
+              <!-- <div class="d-flex align-items-center"> -->
+              <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search w-100">
+                <input type="text" class="form-control" placeholder="Search products" name="base-search-query"
+                  id="base-search-query">
+                <!-- <div id="base-suggestions" class="suggestions-list"></div> -->
+              </form>
+              <!-- </div> -->
+            </li>
+          </ul>
+          <!-- <ul class="navbar-nav navbar-nav-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
+                <div class="navbar-profile">
+                  <img class="img-xs rounded-circle" src="{% static 'assets/images/faces/face15.jpg' %}" alt="">
+                  <p class="mb-0 d-none d-sm-block navbar-profile-name">{{request.user.username}}</p>
+                  <i class="mdi mdi-menu-down d-none d-sm-block"></i>
+                </div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                aria-labelledby="profileDropdown">
+                <h6 class="p-3 mb-0">Profile</h6>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-dark rounded-circle">
+                      <i class="mdi mdi-settings text-success"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <p class="preview-subject mb-1">Settings</p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item" href="{% url 'admin_logout' %}">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-dark rounded-circle">
+                      <i class="mdi mdi-logout text-danger"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <p class="preview-subject mb-1">Log out</p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <p class="p-3 mb-0 text-center">Advanced settings</p>
+              </div>
+            </li>
+          </ul> -->
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+            data-toggle="offcanvas">
+            <span class="mdi mdi-format-line-spacing"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+
+
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+          </div>
+
+          {% endfor %}
+          {% endif %}
+          <!-- <div class="overlay" id="loading-overlay">
+            <div class="wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+              <div class="circle"></div>
+              <div class="shadow"></div>
+              <div class="shadow"></div>
+              <div class="shadow"></div>
+            </div>
+          </div> -->
+
+          {% block content %}
+
+
+          {% endblock %}
+
+
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © dm.com
+              2024</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"><a
+                href="#" target="_blank">DM admin
+                template</a> </span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/progressbar.js/progressbar.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/jvectormap/jquery-jvectormap.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+  <script src="{% static 'assets/vendors/owl-carousel-2/owl.carousel.min.js' %}"></script>
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+  <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'assets/js/misc.js' %}"></script>
+  <script src="{% static 'assets/js/settings.js' %}"></script>
+  <script src="{% static 'assets/js/todolist.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page -->
+  <script src="{% static 'assets/js/dashboard.js' %}"></script>
+  <!-- End custom js for this page -->
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('base-search-query').addEventListener('input', function () {
+        var query = this.value;
+        console.log(query)
+        var suggestions = document.getElementById('base-suggestions');
+        console.log(query)
+        if (query.length > 1) {
+          fetch('{% url "product_search_suggestions" %}?q=' + query)
+            .then(response => response.json())
+            .then(data => {
+              suggestions.style.display = 'block';
+              suggestions.innerHTML = '';
+              data.forEach(function (item) {
+                var suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('suggestion-item');
+                suggestionItem.textContent = item.id + '-' + item.name;
+                suggestionItem.addEventListener('click', function () {
+                  document.getElementById('search-query').value = item.id + '-' + item.name;
+                  suggestions.innerHTML = '';
+                });
+                suggestions.appendChild(suggestionItem);
+              });
+            });
+        } else {
+          document.getElementById('suggestions').innerHTML = '';
+        }
+      });
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var overlay = document.getElementById('loading-overlay');
+
+      setTimeout(function () {
+        overlay.style.opacity = '0';
+        setTimeout(function () {
+          overlay.style.display = 'none';
+        }, 500);
+      }, 2000);
+    });
+  </script>
+
+</body>
+
+</html>
+
+<style>
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .wrapper {
+    width: 200px;
+    height: 60px;
+    position: relative;
+    z-index: 9999;
+  }
+
+  .circle {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 50%;
+    background-color: #fff;
+    left: 15%;
+    transform-origin: 50%;
+    animation: circle7124 .5s alternate infinite ease;
+  }
+
+  @keyframes circle7124 {
+    0% {
+      top: 60px;
+      height: 5px;
+      border-radius: 50px 50px 25px 25px;
+      transform: scaleX(1.7);
+    }
+
+    40% {
+      height: 20px;
+      border-radius: 50%;
+      transform: scaleX(1);
+    }
+
+    100% {
+      top: 0%;
+    }
+  }
+
+  .circle:nth-child(2) {
+    left: 45%;
+    animation-delay: .2s;
+  }
+
+  .circle:nth-child(3) {
+    left: auto;
+    right: 15%;
+    animation-delay: .3s;
+  }
+
+  .shadow {
+    width: 20px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: rgba(68, 67, 67, 0.9);
+    position: absolute;
+    top: 62px;
+    transform-origin: 50%;
+    z-index: -1;
+    left: 15%;
+    filter: blur(5px);
+    animation: shadow046 .5s alternate infinite ease;
+  }
+
+  @keyframes shadow046 {
+    0% {
+      transform: scaleX(1.5);
+    }
+
+    40% {
+      transform: scaleX(1);
+      opacity: .7;
+    }
+
+    100% {
+      transform: scaleX(.2);
+      opacity: .4;
+    }
+  }
+
+  .shadow:nth-child(4) {
+    left: 45%;
+    animation-delay: .2s
+  }
+
+  .shadow:nth-child(5) {
+    left: auto;
+    right: 15%;
+    animation-delay: .3s;
+  }
+
+  .suggestions-list {
+    border: 1px solid rgb(211, 211, 211);
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    background-color: black;
+    z-index: 1000;
+    display: none;
+  }
+
+  .suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  .suggestion-item:hover {
+    background-color: #444444;
+  }
+</style>

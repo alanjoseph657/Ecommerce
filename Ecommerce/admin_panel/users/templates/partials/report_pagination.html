@@ -1,0 +1,33 @@
+    <span class="step-links d-flex justify-content-center w-100">
+        <div class="text-center align-items-center mr-2">
+            {% if result.has_previous %}
+                <a class="btn btn-inverse-light" onclick="updateReportTable(1)">&laquo;</a>
+            {% else %}
+                <a class="btn btn-inverse-light" style="pointer-events: none;">&laquo;</a>
+            {% endif %}
+        </div>
+        <div class="text-center align-items-center mr-2">
+            {% if result.has_previous %}
+                <a class="btn btn-inverse-light" onclick="updateReportTable({{ result.previous_page_number }})">&#8249;</a>
+            {% else %}
+                <a class="btn btn-inverse-light" style="pointer-events: none;">&#8249;</a>
+            {% endif %}
+        </div>
+        <span class="current mr-2">
+            Page {{ result.number }} of {{ result.paginator.num_pages }} new
+        </span>
+        <div class="text-center align-items-center mr-2">
+            {% if result.has_next %}
+                <a class="btn btn-inverse-light" onclick="updateReportTable({{ result.next_page_number }})">&#8250;</a>
+            {% else %}
+                <a class="btn btn-inverse-light" style="pointer-events: none;">&#8250;</a>
+            {% endif %}
+        </div>
+        <div class="text-center align-items-center">
+            {% if result.has_next %}
+                <a class="btn btn-inverse-light" onclick="updateReportTable({{ result.paginator.num_pages }})">&raquo;</a>
+            {% else %}
+                <a class="btn btn-inverse-light" style="pointer-events: none;">&raquo;</a>
+            {% endif %}
+        </div>
+    </span>

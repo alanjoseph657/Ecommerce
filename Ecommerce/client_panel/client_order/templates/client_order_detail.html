@@ -1,0 +1,123 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Order Detail</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'client_orders' %}">Orders</a></li>
+        <li class="breadcrumb-item active text-white">Order detail</li>
+    </ol>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        {% if items %}
+        <h3 class="mb-4">Ordered Products</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Products</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Variant</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <th scope="row">
+                            <div class="d-flex align-items-center">
+                                <img src="/media/{{item.media_file}}" class="img-fluid me-5 rounded-circle"
+                                    style="width: 80px; height: 80px;" alt="">
+                            </div>
+                        </th>
+                        <td>
+                            <p class="mb-0 mt-4">{{item.product_name}}</p>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4">{{item.variant_name}}</p>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4" id="price">{{item.price}} $</p>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4" id="price">{{item.quantity}}</p>
+                        </td>
+                        
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="row g-4 justify-content-end">
+            <div class="col-12">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+
+                        <h3 class="display-6 mb-4"><span class="fw-normal">Order Detail</span></h3>
+
+                        <div class="row mb-4">
+                            <p >Order ID</p>
+                            <h5>{{order.id}}</h5>
+                        </div>
+                        <div class="row mb-4">
+                            <p>Status</p>
+                            <h5>{{order.status}}</h5>
+                        </div>
+                        <div class="row mb-4">
+                            <p >Payment Status</p>
+                            <h5>{{order.payment_status}}</h5>
+                        </div>
+                        <div class="row mb-4">
+                            <p >Payment Mode</p>
+                            <h5>{{order.payment_mode}}</h5>
+                        </div>
+                        <div class="row mb-4">
+                            <p >Order Placed</p>
+                            <h5>{{order.created_at}}</h5>
+                        </div>
+
+                        <div class="row mb-4">
+                            <p >Shipping Address</p>
+                            <h5>{{address.name}}</h5>
+                            <h5>{{address.address_line1}}, {{address.address_line2}}</h5>
+                            <h5>{{address.city}}</h5>
+                            <h5>{{address.state}},  {{address.country}}</h5>
+                            <h5>{{address.postal_code}}</h5>
+                            <h5>{{address.alt_number}}</h5>                        
+                        </div>
+                        {% if order.status == 'PENDING' or items.status == 'SHIPPED' %}
+                        <a class="btn btn-secondary w-100 mt-3" href="{% url 'cancel_order' %}?order_id={{order.id}}">Cancel Order</a>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endblock %}

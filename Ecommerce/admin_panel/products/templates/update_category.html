@@ -1,0 +1,74 @@
+{% extends 'base2.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card p-3 mb-3">
+        <div class="card-body py-0 px-0 px-sm-3">
+          <div class="row align-items-center">
+                <h2>Create Category</h2>
+          </div>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'list_all_categories' %}">Category</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Edit Category</li>
+            </ol>
+          </nav>
+      </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card d-flex pl-3 p-3 mb-3">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="category_name" class="form-label">Category Name :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="category_name" class="form-control" type="text" name="category_name" required value="{{ category_data.category_name }}">
+                    </div>
+                </div>
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-start">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="description" class="form-label">Description :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <textarea id="description" name="description" class="form-control">{{ category_data.description }}</textarea>
+                    </div>
+                </div>
+
+                {% if category_data.image %}
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="iles" class="form-label">Category Image :</label>
+                    </div>
+                    <div class="position-relative mb-2 mb-md-0 col-12 col-md-2">
+                        <img id="files" src="{{category_data.image.url}}" class="d-block w-100 h-75 mb-3" alt="image1">
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="mb-5 d-flex flex-column flex-md-row align-items-center">
+                    <div class="mb-2 mb-md-0 col-12 col-md-2">
+                        <label for="media_files" class="form-label">Upload Image :</label>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <input id="media_files" class="form-control" type="file" name="image">
+                    </div>
+
+                </div>
+
+                <div class="mb-3 d-flex justify-content-center align-items-center">
+                        <button type="submit" class="btn btn-success btn-rounded"><strong>Update</strong></button>                    
+                </div>                
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,327 @@
+{% extends 'user_base.html' %}
+{% load static %}
+{% block subcontent %}
+
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Cart</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepage_view' %}">Home</a></li>
+        <li class="breadcrumb-item active text-white">Cart</li>
+    </ol>
+</div>
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        {% if result.cart_items %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Products</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Variant</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for items in result.cart_items %}
+                    <tr>
+                        <th scope="row">
+                            <div class="d-flex align-items-center">
+                                <img src="/media/{{items.product_media}}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                            </div>
+                        </th>
+                        <td>
+                            <p class="mb-0 mt-4">{{items.product_name}}</p>
+                            <p class="d-none" id="product_id">{{items.product_id}}</p>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4">{{items.variant_name}}</p>
+                            <p class="d-none" id="variant_id">{{items.variant_id}}</p>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4" id="price">{{items.price}} $</p>
+                        </td>
+                        <td>
+                            <div class="input-group quantity mt-4" style="width: 100px;">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border" >   
+                                    <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm text-center border-0" value="{{items.quantity}}" id="quantity">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4" id="product_total"></p>
+                        </td>
+                        <td>
+                            <a href="{% url 'remove_from_cart_view' %}?cart_id={{items.id}}" class="btn btn-md rounded-circle bg-light border mt-4" >
+                                <i class="fa fa-times text-danger"></i>
+                            </a>
+                        </td>
+                    
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- <div class="mt-5">
+            <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
+            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
+        </div> -->
+        <div class="row g-4 justify-content-end">
+            <div class="col-lg-8 col-12">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+
+                        <h3 class="display-6 mb-4"><span class="fw-normal">Shipping Address</span></h3>
+
+                        <div class="d-flex justify-content-between mb-4">
+                            <p class="mb-3" id="current-shipping-address">
+                                {{ shipping_address.name }}<br>
+                                {{ shipping_address.address_line1 }},   {{ shipping_address.address_line2 }}<br>
+                                {{ shipping_address.city }}, {{ shipping_address.state }}<br>
+                                {{ shipping_address.country }} - {{ shipping_address.postal_code }}<br>
+                                {{ shipping_address.alt_number }}
+                            </p>
+                        </div>
+
+
+                        <div id="address-dropdown-container" style="display: none;" class=" mb-3">
+                            <select id="address-dropdown" class="form-select">
+                                {% for address in addresses %}
+                                    <option value="{{ address.id }}" style="overflow: hidden;" {% if address.id == shipping_address.id %} selected {% endif %}>
+                                        {{ address.name }} - {{ address.address_line1 }}, {{ address.city }},   
+                                        {{ address.state }}, {{ address.postal_code }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary w-100" id="change-address-btn">Change Address</button>
+
+                        <a class="btn btn-secondary w-100 mt-3" href="{% url 'client_address_view' %}">Add Address</a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+                        <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="mb-0 me-4">Subtotal:</h5>
+                            <p class="mb-0" id="subtotal"></p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="mb-0 me-4">Shipping</h5>
+                            <div class="">
+                                <p class="mb-0">Flat rate: $3.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                        <h5 class="mb-0 ps-4 me-4">Total</h5>
+                        <p class="mb-0 pe-4" id="total">$99.00</p>
+                    </div>
+                    {% if shipping_address %}
+                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button" id="proceed-checkout-btn">Proceed Checkout</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center">No items added</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function updateProductTotal(row) {
+    const priceElement = row.querySelector('#price');
+    const quantityElement = row.querySelector('#quantity');
+    const totalElement = row.querySelector('#product_total');
+    
+    const price = parseFloat(priceElement.innerText.replace('$', '').trim());
+    const quantity = parseInt(quantityElement.value.trim());
+
+    const total = (price * quantity).toFixed(2);
+    totalElement.innerText = `${total} $`;
+}
+
+function updateAllProductTotals() {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        updateProductTotal(row);
+    });
+}
+
+function handleQuantityChange(event) {
+    const row = event.target.closest('tr');
+    updateProductTotal(row);
+}
+
+function setupQuantityChangeListeners() {
+    const quantityInputs = document.querySelectorAll('#quantity');
+    const minusButtons = document.querySelectorAll('.btn-minus');
+    const plusButtons = document.querySelectorAll('.btn-plus');
+
+    minusButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            updateProductTotal(this.closest('tr'));
+            updateTotals();
+        });
+    });
+
+    plusButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            updateProductTotal(this.closest('tr'));
+            updateTotals();
+        });
+    });
+}
+function updateTotals() {
+    const rows = document.querySelectorAll('tbody tr');
+    let subtotal = 0;
+    rows.forEach(row => {
+        const totalElement = row.querySelector('#product_total');
+        const total = parseFloat(totalElement.innerText.replace('$', '').trim());
+        subtotal += total;
+    });
+    document.getElementById('subtotal').innerText = `$${subtotal.toFixed(2)}`;
+    const shipping = 3.00;
+    const total = subtotal + shipping;
+    document.getElementById('total').innerText = `$${total.toFixed(2)}`;
+}
+
+function updateShippingAddress(address) {
+    const currentShippingAddress = document.getElementById('current-shipping-address');
+    currentShippingAddress.innerHTML = `
+        ${address.name}<br>
+        ${address.address_line1}, ${address.address_line2}<br>
+        ${address.city}, ${address.state}<br>
+        ${address.country} - ${address.postal_code}<br>
+        ${address.alt_number}
+    `;
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateAllProductTotals();
+    updateTotals();
+    setupQuantityChangeListeners();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const changeAddressBtn = document.getElementById('change-address-btn');
+    const addressDropdownContainer = document.getElementById('address-dropdown-container');
+    const addressDropdown = document.getElementById('address-dropdown');
+
+    changeAddressBtn.addEventListener('click', function() {
+        addressDropdownContainer.style.display = 'block';
+        addressDropdown.focus();
+    });
+
+    addressDropdown.addEventListener('change', function() {
+        const addressId = this.value;
+
+        fetch(`{% url 'get_address_by_id_for_cart_view' %}?address_id=${addressId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateShippingAddress(data.new_address[0]);
+                    addressDropdownContainer.style.display = 'none';
+                } else {
+                    alert(data.error || 'Error updating address');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating address');
+            });
+    });
+});
+
+
+document.getElementById('proceed-checkout-btn').addEventListener('click', function() {
+        const cartItems = [];
+        const cartItemIds = [];
+        {% for item in result.cart_items %}
+            cartItemIds.push({{item.id}})
+        {% endfor %}
+        console.log(cartItemIds)
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const productId = row.querySelector('td:nth-child(2) p.d-none').textContent;
+            const variantId = row.querySelector('td:nth-child(3) p.d-none').textContent;
+            const quantity = row.querySelector('input[type="text"]').value;
+            const price = row.querySelector('td:nth-child(4)').textContent.replace('$', '');
+            const total = row.querySelector('td:nth-child(6)').textContent.replace('$', '');
+
+            cartItems.push({
+                product_id: productId,
+                variant_id: variantId,
+                quantity: quantity,
+                price: price,
+                total: total
+            });
+        });
+
+        const shippingAddressId = document.getElementById('address-dropdown').value;
+        const totalPrice = document.getElementById('total').textContent.replace('$', '');
+
+        const data = {
+            cart_item_ids: cartItemIds,
+            cart_items: cartItems,
+            shipping_address_id: shippingAddressId,
+            total_price: totalPrice
+        };
+
+        fetch(`{% url 'proceed_checkout_view' %}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = `{% url 'payment_page' %}?order_id=${data.order_id}`;
+            } else {
+                alert(data.error || 'Error processing checkout');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error processing checkout');
+        });
+    });
+</script>
+{% if messages %}
+    {% for i in messages %}
+        {% if i.tags == 'warning' %}
+            <script>
+                Swal.fire('{{i}}', '', 'warning');
+            </script>
+        {% elif i.tags == 'error' %}
+            <script>
+                Swal.fire('{{i}}', '', 'error');
+            </script>
+        {% else %}
+            <script>
+                Swal.fire('{{i}}', '', 'success');
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endblock %}

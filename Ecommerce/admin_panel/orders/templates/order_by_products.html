@@ -1,0 +1,188 @@
+{% extends 'base2.html' %}
+{% block content %}
+<style>
+    .suggestions-list {
+        border: 1px solid rgb(211, 211, 211);
+        max-height: 200px;
+        overflow-y: auto;
+        position: absolute;
+        width: 100%;
+        background-color: black;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .suggestion-item {
+        padding: 8px;
+        cursor: pointer;
+    }
+    
+    .suggestion-item:hover {
+        background-color: #444444;
+    }
+    </style>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card p-3 mb-3">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <h2>Orders</h2>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Home</a></li>
+                    <li class="breadcrumb-item active"><a href="{% url 'orders' %}">Orders</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <!-- <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0">
+        <div class="card mb-3 bg-none">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <select id="status" name="status" class="form-control text-light" required
+                        onchange="updateOrderTable()">
+                        <option value="" selected>-- Filter Status --</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="card mb-3 bg-none">
+            <div class="card-body py-0 px-0 px-sm-3">
+                <div class="row align-items-center">
+                    <form class="w-100" method="post" action="{% url 'order_by_product' %}">
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control" placeholder="Search Product Name" 
+                            {% if request.session.search_query %} value="{{request.session.search_query}}" {% endif %}
+                            name="search-query" id="search-query">
+                            <button class="btn btn-dark" type="submit"><i class="mdi mdi-magnify "></i></button>
+                        </div>
+                        <div id="suggestions" class="suggestions-list"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+{% if result %}
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+
+        <div class="card p-3 mb-3">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order ID</th>
+                            <th>Status</th>
+                            <!-- <th>Description</th> -->
+                            <th>Payment Reference</th>
+                            <th>Placed on</th>
+                            <!-- <th>Inventory</th> -->
+                            <th>Action</th>
+                            <!-- <th>Delete</th> -->
+                        </tr>
+                    </thead>
+                    <tbody id="order-table-body">
+                        {% if not result.error %}
+                        {% for i in result.paginated_orders %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{i.id}}</td>
+                            <td>{{i.status}}</td>
+                            <td>{{i.reference_number}}</td>
+                            <td>{{i.created_at}}</td>
+                            
+                            <td><a href="{% url 'order_detail' order_id=i.id %}"><i class=" mdi mdi-eye "></i> View</a>
+                            </td>
+                            <!-- <td><a href="#"> <i class="mdi mdi-delete"></i> Delete</a></td> -->
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pagination row stretch-card">
+
+    <span class="step-links d-flex justify-content-center w-100">
+
+        <div class="text-center align-items-center mr-2">
+            <a class="btn btn-inverse-light" {% if not result.paginated_orders.has_previous %}
+                style="pointer-events: none;" {% else %} href="?&page=1" 
+                {% endif %}>&laquo;</a>
+        </div>
+        <div class="text-center align-items-center mr-2">
+            <a class="btn btn-inverse-light" {% if not result.paginated_orders.has_previous %}
+                style="pointer-events: none;" {% else %}
+                href="?&page={{ result.paginated_orders.previous_page_number }}" 
+                {% endif %}>&#8249;</a>
+        </div>
+
+        <span class="current mr-2">
+            Page {{ result.paginated_orders.number }} of {{ result.paginated_orders.paginator.num_pages }}
+        </span>
+
+        <div class="text-center align-items-center mr-2">
+            <a class="btn btn-inverse-light" {% if result.paginated_orders.has_next %}
+                href="?&page={{ result.paginated_orders.next_page_number }}" 
+                {% else %} style="pointer-events: none;" {% endif %}>&#8250;</a>
+        </div>
+        <div class="text-center align-items-center">
+            <a class="btn btn-inverse-light" {% if result.paginated_orders.has_next %}
+                href="?&page={{ result.paginated_orders.paginator.num_pages }}" 
+                {% else %} style="pointer-events: none;" {% endif %}>&raquo;</a>
+        </div>
+
+    </span>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('search-query').addEventListener('input', function () {
+                var query = this.value;
+                var suggestions = document.getElementById('suggestions');
+                console.log(query)
+                if (query.length > 0) {
+                    fetch('{% url "product_search_suggestions" %}?q=' + query)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestions.style.display = 'block';
+                            suggestions.innerHTML = '';
+                            data.forEach(function (item) {
+                                var suggestionItem = document.createElement('div');
+                                suggestionItem.classList.add('suggestion-item');
+                                suggestionItem.textContent = item.id + ' - ' + item.name;
+                                suggestionItem.addEventListener('click', function () {
+                                    document.getElementById('search-query').value = item.name;
+                                    suggestions.innerHTML = '';
+                                });
+                                suggestions.appendChild(suggestionItem);
+                            });
+                        });
+                } else {
+                    document.getElementById('suggestions').innerHTML = '';
+                }
+            });
+        });
+</script>
+{% endblock %}
